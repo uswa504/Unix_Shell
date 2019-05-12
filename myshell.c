@@ -25,12 +25,13 @@ char* read_cmd(char*, FILE*);
 int main(){
    char *cmdline;
    char** arglist;
-   char* cwd;
+   char cwd[1024];
+   char str[80];
    getcwd(cwd, sizeof(cwd));
-   char *str = "myshell@";
+   strcpy(str,"myshell@");
    strcat(str, cwd);
-   char* shell = str;
-   while((cmdline = read_cmd(shell,stdin)) != NULL){
+   strcat(str, ":>>>");
+   while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
             execute(arglist);
          for(int j=0; j < MAXARGS+1; j++)
