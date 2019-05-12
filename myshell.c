@@ -1,8 +1,4 @@
 /*
-*  Video Lecture: 22
-*  Programmer: Arif Butt
-*  Course: System Programming with Linux
-*  myshellv1.c: 
 *  main() displays a prompt, receives a string from keyboard, pass it to tokenize()
 *  tokenize() allocates dynamic memory and tokenize the string and return a char**
 *  main() then pass the tokenized string to execute() which calls fork and exec
@@ -13,7 +9,6 @@
 *   if user press ctrl+D it give sigsegv
 *   however if you give spaces and give a cmd and press enter it works
 */
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -24,27 +19,28 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-#define PROMPT "PUCITshell:- "
-
 int execute(char* arglist[]);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int main(){
    char *cmdline;
    char** arglist;
-   char* prompt = PROMPT;   
-   while((cmdline = read_cmd(prompt,stdin)) != NULL){
+   char* cwd;
+   getcwd(cwd, sizeof(cwd));
+   char *str = "myshell@";
+   strcat(str, cwd);
+   char* shell = str;
+   while((cmdline = read_cmd(shell,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
             execute(arglist);
-       //  need to free arglist
          for(int j=0; j < MAXARGS+1; j++)
 	         free(arglist[j]);
          free(arglist);
          free(cmdline);
       }
-  }//end of while loop
-   printf("\n");
-   return 0;
+  }
+  printf("\n");
+  return 0;
 }
 int execute(char* arglist[]){
    int status;
@@ -90,14 +86,13 @@ char** tokenize(char* cmdline){
    }
    arglist[argnum] = NULL;
    return arglist;
-}      
-
+}
 char* read_cmd(char* prompt, FILE* fp){
-   printf("%s", prompt);
+  printf("%s", prompt);
   int c; //input character
-   int pos = 0; //position of character in cmdline
-   char* cmdline = (char*) malloc(sizeof(char)*MAX_LEN);
-   while((c = getc(fp)) != EOF){
+  int pos = 0; //position of character in cmdline
+  char* cmdline = (char*) malloc(sizeof(char)*MAX_LEN);
+  while((c = getc(fp)) != EOF){
        if(c == '\n')
 	  break;
        cmdline[pos++] = c;
