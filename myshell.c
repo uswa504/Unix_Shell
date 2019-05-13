@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -22,11 +23,17 @@
 int execute(char* arglist[]);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
+void sig_handler(int signo){
+   if (signo == SIGINT)
+     printf("SIGNAL CATCHED\n");
+}
 int main(){
    char *cmdline;
    char** arglist;
    char cwd[1024];
    char str[80];
+   if(signal(SIGINT, sig_handler) == SIG_ERR)
+      printf("\nSignal not catched\n");
    getcwd(cwd, sizeof(cwd));
    strcpy(str,"myshell@");
    strcat(str, cwd);
@@ -49,13 +56,13 @@ int execute(char* arglist[]){
    switch(cpid){
       case -1:
          perror("fork failed");
-	      exit(1);
+	 exit(1);
       case 0:
 	      execvp(arglist[0], arglist);
  	      perror("Command not found...");
 	      exit(1);
       default:
-	      waitpid(cpid, &status, 0);
+	 waitpid(cpid, &status, 0);
          printf("child exited with status %d \n", status >> 8);
          return 0;
    }
