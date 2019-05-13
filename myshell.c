@@ -1,14 +1,4 @@
-/*
-*  main() displays a prompt, receives a string from keyboard, pass it to tokenize()
-*  tokenize() allocates dynamic memory and tokenize the string and return a char**
-*  main() then pass the tokenized string to execute() which calls fork and exec
-*  finally main() again displays the prompt and waits for next command string
-*   Limitations:
-*   if user press enter without any input the program gives sigsegv 
-*   if user give only spaces and press enter it gives sigsegv
-*   if user press ctrl+D it give sigsegv
-*   however if you give spaces and give a cmd and press enter it works
-*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -24,8 +14,9 @@ int execute(char* arglist[]);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 void sig_handler(int signo){
-   if (signo == SIGINT)
-     printf("SIGNAL CATCHED\n");
+   if (signo == SIGINT){
+     printf("STOP SIGNAL");
+   }
 }
 int main(){
    char *cmdline;
