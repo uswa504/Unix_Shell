@@ -9,13 +9,14 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-int execute(char* arglist[], char*,char*);
+int execute(char* arglist[], int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
+int redirect_input(char* arglist[], char** input_file);
+int redirect_output(char* arglist[], char** output_file);
 int main(){
    int input;
    int output;
-   int block;
    char *output_file;
    char *input_file;
    char *cmdline;
@@ -39,7 +40,25 @@ int main(){
   printf("\n");
   return 0;
 }
-int execute(char* arglist[], char* input_file, char* output_file){
+int redirect_input(char* arglist[], char** input_file ){
+   int i;
+   int j;
+   for(i=0; arglist[i]!=NULL; i++){
+     if(arglist[i][0] == '<'){
+      free(arglist[i];
+      if(arglist[i+1] != NULL){
+  	*input_file = arglist[i+1};
+      }
+      else return -1;
+      for(j=i; args[j-1] != NULL; j++){
+       	args[j] = args[j+2];
+      }
+      return 1;
+   }
+  }
+  return 0;
+}
+int execute(char* arglist[], int input, char* input_file,int output,  char* output_file){
    int status;
    int result;
    int cpid = fork();
@@ -48,14 +67,12 @@ int execute(char* arglist[], char* input_file, char* output_file){
          perror("fork failed");
 	 exit(1);
       case 0:
-	      fd_in = open(input_file, O_RDONLY);
-     	      close(0);
-	      dup(fd_in);
-	      close(fd_in);
-	      fd_out=creat(output_file, 0644);
-	      close(1);
-	      dup(fd_out);
-	      close(fd_out);
+	      if(input){
+		freopen(input_file, "r", stdin);
+	      }
+	      if(output){
+                freopen(output_file, "w+", stdout);
+              }
               execvp(arglist[0], arglist);
  	      perror("Command not found...");
 	      exit(1);
