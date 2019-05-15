@@ -13,6 +13,9 @@ int execute(char* arglist[], char*,char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int main(){
+   int input;
+   int output;
+   int block;
    char *output_file;
    char *input_file;
    char *cmdline;
