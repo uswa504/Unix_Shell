@@ -19,8 +19,7 @@ int main(){
    char** arglist;
    char cwd[1024];
    char str[80];
-   if(signal(SIGINT, sig_handler) == SIG_ERR)
-      printf("\nSignal not catched\n");
+   signal(SIGINT, SIG_DFL);
    getcwd(cwd, sizeof(cwd));
    strcpy(str,"myshell@");
    strcat(str, cwd);
