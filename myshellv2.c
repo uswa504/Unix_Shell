@@ -58,6 +58,24 @@ int redirect_input(char* arglist[], char** input_file ){
   }
   return 0;
 }
+int redirect_output(char* arglist[], char** output_file ){
+   int i;
+   int j;
+   for(i=0; arglist[i]!=NULL; i++){
+     if(arglist[i][0] == '>'){
+      free(arglist[i];
+      if(arglist[i+1] != NULL){
+  	*output_file = arglist[i+1};
+      }
+      else return -1;
+      for(j=i; args[j-1] != NULL; j++){
+       	args[j] = args[j+2];
+      }
+      return 1;
+   }
+  }
+  return 0;
+}
 int execute(char* arglist[], int input, char* input_file,int output,  char* output_file){
    int status;
    int result;
