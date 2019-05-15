@@ -29,13 +29,6 @@ int main(){
    strcat(str, cwd);
    strcat(str, ":>>>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
-      if((arglist = tokenize(cmdline)) != NULL){
-            execute(arglist);
-         for(int j=0; j < MAXARGS+1; j++)
-	         free(arglist[j]);
-         free(arglist);
-         free(cmdline);
-      }
   }
   printf("\n");
   return 0;
