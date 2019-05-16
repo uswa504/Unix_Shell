@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,51 +9,86 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-int execute(char* arglist[]);
+int execute(char* arglist[], int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
-void sig_handler(int signo){
-   if (signo == SIGINT){
-     printf("STOP SIGNAL");
-   }
-}
+int redirect_input(char* arglist[], char** input_file);
+int redirect_output(char* arglist[], char** output_file);
 int main(){
+   int input;
+   int output;
+   char *output_file;
+   char *input_file;
    char *cmdline;
    char** arglist;
    char cwd[1024];
    char str[80];
-   if(signal(SIGINT, sig_handler) == SIG_ERR)
-      printf("\nSignal not catched\n");
+   signal(SIGINT, SIG_DFL);
    getcwd(cwd, sizeof(cwd));
    strcpy(str,"myshell@");
    strcat(str, cwd);
    strcat(str, ":>>>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
-      if((arglist = tokenize(cmdline)) != NULL){
-            execute(arglist);
-         for(int j=0; j < MAXARGS+1; j++)
-	         free(arglist[j]);
-         free(arglist);
-         free(cmdline);
-      }
   }
   printf("\n");
   return 0;
 }
-int execute(char* arglist[]){
+int redirect_input(char* arglist[], char** input_file ){
+   int i;
+   int j;
+   for(i=0; arglist[i]!=NULL; i++){
+     if(arglist[i][0] == '<'){
+      free(arglist[i];
+      if(arglist[i+1] != NULL){
+  	*input_file = arglist[i+1};
+      }
+      else return -1;
+      for(j=i; args[j-1] != NULL; j++){
+       	args[j] = args[j+2];
+      }
+      return 1;
+   }
+  }
+  return 0;
+}
+int redirect_output(char* arglist[], char** output_file ){
+   int i;
+   int j;
+   for(i=0; arglist[i]!=NULL; i++){
+     if(arglist[i][0] == '>'){
+      free(arglist[i];
+      if(arglist[i+1] != NULL){
+  	*output_file = arglist[i+1};
+      }
+      else return -1;
+      for(j=i; args[j-1] != NULL; j++){
+       	args[j] = args[j+2];
+      }
+      return 1;
+   }
+  }
+  return 0;
+}
+int execute(char* arglist[], int input, char* input_file,int output,  char* output_file){
    int status;
+   int result;
    int cpid = fork();
    switch(cpid){
       case -1:
          perror("fork failed");
 	 exit(1);
       case 0:
-	      execvp(arglist[0], arglist);
+	      if(input){
+		freopen(input_file, "r", stdin);
+	      }
+	      if(output){
+                freopen(output_file, "w+", stdout);
+              }
+              execvp(arglist[0], arglist);
  	      perror("Command not found...");
 	      exit(1);
       default:
 	 waitpid(cpid, &status, 0);
-         printf("child exited with status %d \n", status >> 8);
          return 0;
    }
 }
