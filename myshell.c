@@ -55,7 +55,7 @@ int main(){
      case 1:
        printf("Redirecting to %s\n", output_file);
     }
-    execute(arglist, input, input_file, output, output_file);//  need to free arglist
+    execute(arglist,block, input, input_file, output, output_file);//  need to free arglist
          for(int j=0; j < MAXARGS+1; j++)
 	         free(arglist[j]);
          free(arglist);
@@ -69,8 +69,8 @@ int background_process(char **arglist){
    int i;
    for(i=0; arglist[i] != NULL; i++){
       if(arglist[i-1][0] == '&'){
-        free(arglist[i-1];
-        arglist[i-1] = NULL:
+        free(arglist[i-1]);
+        arglist[i-1] = NULL;
         return 1;
       }
       else return 0;
