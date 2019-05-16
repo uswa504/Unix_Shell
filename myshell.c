@@ -9,7 +9,6 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-//extern char **getline();
 int execute(char* arglist[], int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
@@ -26,7 +25,7 @@ int main(){
    char str[80];
    signal(SIGINT, SIG_DFL);
    getcwd(cwd, sizeof(cwd));
-   strcpy(str,"myshell@");
+   strcpy(str,"cs321shell@");
    strcat(str, cwd);
    strcat(str, ":>>>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
@@ -34,7 +33,7 @@ int main(){
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
-       printf("error in input \n");
+       printf("Error in input redirection \n");
        continue;
        break;
      case 0:
@@ -45,7 +44,7 @@ int main(){
     output = redirect_output(arglist, &output_file);
     switch(output){
      case -1:
-       printf("error in output \n");
+       printf("Error in output \n");
        continue;
        break;
      case 0:
@@ -53,8 +52,7 @@ int main(){
      case 1:
        printf("Redirecting to %s\n", output_file);
     }
-    execute(arglist, input, input_file, output, output_file);
-    //  need to free arglist
+    execute(arglist, input, input_file, output, output_file);//  need to free arglist
          for(int j=0; j < MAXARGS+1; j++)
 	         free(arglist[j]);
          free(arglist);
