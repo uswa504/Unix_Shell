@@ -28,10 +28,35 @@ int main(){
    strcpy(str,"myshell@");
    strcat(str, cwd);
    strcat(str, ":>>>");
-   while((cmdline = read_cmd(str,stdin)) != NULL){
-  }
-  printf("\n");
-  return 0;
+   while(1){
+    printf(str);
+    arglist = getline();
+    input = redirect_input(arglist, &input_file);
+    switch(input){
+     case -1:
+       printf("error");
+       continue;
+       break;
+     case 0:
+       break;
+     case 1:
+       printf("Redirecting from %s", input_file);
+    }
+    output = redirect_output(arglist, &output_file);
+    switch(output){
+     case -1:
+       printf("error");
+       continue;
+       break;
+     case 0:
+       break;
+     case 1:
+       printf("Redirecting to %s", output_file);
+    }
+    execute(arglist, input, input_file_name, output, output_file);
+   }
+   printf("\n");
+   return 0;
 }
 int redirect_input(char* arglist[], char** input_file ){
    int i;
@@ -92,7 +117,7 @@ int execute(char* arglist[], int input, char* input_file,int output,  char* outp
          return 0;
    }
 }
-char** tokenize(char* cmdline){
+/*char** tokenize(char* cmdline){
 //allocate memory
    char** arglist = (char**)malloc(sizeof(char*)* (MAXARGS+1));
    for(int j=0; j < MAXARGS+1; j++){
@@ -131,9 +156,9 @@ char* read_cmd(char* prompt, FILE* fp){
        cmdline[pos++] = c;
    }
 //these two lines are added, in case user press ctrl+d to exit the shell
-   if(c == EOF && pos == 0) 
+   if(c == EOF && pos == 0)
       return NULL;
    cmdline[pos] = '\0';
    return cmdline;
-}
+}*/
 
