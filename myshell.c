@@ -9,7 +9,7 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-extern char **getline();
+//extern char **getline();
 int execute(char* arglist[], int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
@@ -29,9 +29,8 @@ int main(){
    strcpy(str,"myshell@");
    strcat(str, cwd);
    strcat(str, ":>>>");
-   while(1){
-    printf(str);
-    arglist = getline();
+   while((cmdline = read_cmd(str,stdin)) != NULL){
+      if((arglist = tokenize(cmdline)) != NULL){
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -55,6 +54,12 @@ int main(){
        printf("Redirecting to %s", output_file);
     }
     execute(arglist, input, input_file, output, output_file);
+    //  need to free arglist
+         for(int j=0; j < MAXARGS+1; j++)
+	         free(arglist[j]);
+         free(arglist);
+         free(cmdline);
+      }
    }
    printf("\n");
    return 0;
@@ -118,7 +123,7 @@ int execute(char* arglist[], int input, char* input_file,int output,  char* outp
          return 0;
    }
 }
-/*char** tokenize(char* cmdline){
+char** tokenize(char* cmdline){
 //allocate memory
    char** arglist = (char**)malloc(sizeof(char*)* (MAXARGS+1));
    for(int j=0; j < MAXARGS+1; j++){
@@ -161,5 +166,4 @@ char* read_cmd(char* prompt, FILE* fp){
       return NULL;
    cmdline[pos] = '\0';
    return cmdline;
-}*/
-
+}
