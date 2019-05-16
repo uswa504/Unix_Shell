@@ -34,24 +34,24 @@ int main(){
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
-       printf("error");
+       printf("error in input \n");
        continue;
        break;
      case 0:
        break;
      case 1:
-       printf("Redirecting from %s", input_file);
+       printf("Redirecting from %s\n", input_file);
     }
     output = redirect_output(arglist, &output_file);
     switch(output){
      case -1:
-       printf("error");
+       printf("error in output \n");
        continue;
        break;
      case 0:
        break;
      case 1:
-       printf("Redirecting to %s", output_file);
+       printf("Redirecting to %s\n", output_file);
     }
     execute(arglist, input, input_file, output, output_file);
     //  need to free arglist
