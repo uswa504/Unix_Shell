@@ -9,7 +9,8 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-int execute(char* arglist[], int, char*, int, char*);
+int execute(char* arglist[], int, int, char*, int, char*);
+int background_process(char *arglist[]);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
@@ -17,6 +18,7 @@ int redirect_output(char* arglist[], char** output_file);
 int main(){
    int input;
    int output;
+   int block;
    char *output_file;
    char *input_file;
    char *cmdline;
@@ -30,6 +32,7 @@ int main(){
    strcat(str, ":>>>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
+    block = (background_process(arglist) == 0);
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -60,6 +63,18 @@ int main(){
       }
    }
    printf("\n");
+   return 0;
+}
+int background_process(char **arglist){
+   int i;
+   for(i=0; arglist[i] != NULL; i++){
+      if(arglist[i-1][0] == '&'){
+        free(arglist[i-1];
+        arglist[i-1] = NULL:
+        return 1;
+      }
+      else return 0;
+   }
    return 0;
 }
 int redirect_input(char* arglist[], char** input_file ){
@@ -98,15 +113,15 @@ int redirect_output(char* arglist[], char** output_file ){
   }
   return 0;
 }
-int execute(char* arglist[], int input, char* input_file,int output,  char* output_file){
+int execute(char* arglist[], int block; int input, char* input_file,int output,  char* output_file){
    int status;
    int result;
    int cpid = fork();
-   switch(cpid){
-      case -1:
+      if(cpid == -1){
          perror("fork failed");
 	 exit(1);
-      case 0:
+      }
+      if(cpid == 0){
 	      if(input){
 		freopen(input_file, "r", stdin);
 	      }
@@ -116,10 +131,11 @@ int execute(char* arglist[], int input, char* input_file,int output,  char* outp
               execvp(arglist[0], arglist);
  	      perror("Command not found...");
 	      exit(1);
-      default:
+      }
+      if(block){
 	 waitpid(cpid, &status, 0);
          return 0;
-   }
+       }
 }
 char** tokenize(char* cmdline){
 //allocate memory
