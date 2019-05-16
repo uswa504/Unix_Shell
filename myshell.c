@@ -9,6 +9,7 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
+extern char **getline();
 int execute(char* arglist[], int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
@@ -53,7 +54,7 @@ int main(){
      case 1:
        printf("Redirecting to %s", output_file);
     }
-    execute(arglist, input, input_file_name, output, output_file);
+    execute(arglist, input, input_file, output, output_file);
    }
    printf("\n");
    return 0;
@@ -63,13 +64,13 @@ int redirect_input(char* arglist[], char** input_file ){
    int j;
    for(i=0; arglist[i]!=NULL; i++){
      if(arglist[i][0] == '<'){
-      free(arglist[i];
+      free(arglist[i]);
       if(arglist[i+1] != NULL){
-  	*input_file = arglist[i+1};
+  	*input_file = arglist[i+1];
       }
       else return -1;
-      for(j=i; args[j-1] != NULL; j++){
-       	args[j] = args[j+2];
+      for(j=i; arglist[j-1] != NULL; j++){
+       	arglist[j] = arglist[j+2];
       }
       return 1;
    }
@@ -81,13 +82,13 @@ int redirect_output(char* arglist[], char** output_file ){
    int j;
    for(i=0; arglist[i]!=NULL; i++){
      if(arglist[i][0] == '>'){
-      free(arglist[i];
+      free(arglist[i]);
       if(arglist[i+1] != NULL){
-  	*output_file = arglist[i+1};
+  	*output_file = arglist[i+1];
       }
       else return -1;
-      for(j=i; args[j-1] != NULL; j++){
-       	args[j] = args[j+2];
+      for(j=i; arglist[j-1] != NULL; j++){
+       	arglist[j] = arglist[j+2];
       }
       return 1;
    }
