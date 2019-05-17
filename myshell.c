@@ -38,7 +38,7 @@ int main(){
       if((arglist = tokenize(cmdline)) != NULL){
        if(internal_commands(arglist))
          continue;
-    block = (background_process(arglist) == 0);
+    //block = (background_process(arglist) == 0);
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
