@@ -94,10 +94,10 @@ int internal_commands(char *arglist[]){
   case 2:
     exit(0);
   case 5:
-    openHelp();
+    //openHelp();
     return 1;
   default:
-    break:
+    break;
   }
   return 0;
 }
