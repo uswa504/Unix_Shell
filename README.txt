@@ -4,4 +4,5 @@ Now i am trying to implement I/O redirection and wrote 2 functions of them. Took
 I/o redirection. used freopen() call to redirect input and output between files.
 Tried to implement process backgrounding functionality by writing background_process function but there are some errors. 
 removed some errors but it's still not working. Now i am trying pipe functionality and some internal commands
-
+Implemented internal commands of exit and cd by writing a internal_commands function
+where i implemented these commands using their system calls of exit() and chdir().
