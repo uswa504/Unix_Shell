@@ -9,12 +9,14 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-int execute(char* arglist[], int, char*, int, char*);
+int execute(char* arglist[], int, int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
 int redirect_output(char* arglist[], char** output_file);
 int main(){
+   int pipe;
+   int block;
    int input;
    int output;
    char *output_file;
@@ -30,6 +32,7 @@ int main(){
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
+    block = (background_process(arglist) == 0);
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -52,7 +55,7 @@ int main(){
      case 1:
        printf("Redirecting to %s\n", output_file);
     }
-    execute(arglist, input, input_file, output, output_file);//  need to free arglist
+    execute(arglist, block, input, input_file, output, output_file);//  need to free arglist
          for(int j=0; j < MAXARGS+1; j++)
 	         free(arglist[j]);
          free(arglist);
@@ -110,7 +113,7 @@ int redirect_output(char* arglist[], char** output_file ){
   }
   return 0;
 }
-int execute(char* arglist[], int input, char* input_file,int output,  char* output_file){
+int execute(char* arglist[], int block, int input, char* input_file,int output,  char* output_file){
    int status;
    int result;
    int cpid = fork();
