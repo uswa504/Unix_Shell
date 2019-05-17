@@ -38,7 +38,7 @@ int main(){
       if((arglist = tokenize(cmdline)) != NULL){
        if(internal_commands(arglist))
          continue;
-    //block = (background_process(arglist) == 0);
+    //block = background_process(arglist);
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -94,7 +94,10 @@ int internal_commands(char *arglist[]){
   case 2:
     exit(0);
   case 5:
-    //openHelp();
+    for(i=0; i<total_commands; i++){
+      printf(commands[i]);
+      printf("\n");
+    }
     return 1;
   default:
     break;
