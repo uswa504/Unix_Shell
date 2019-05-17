@@ -13,7 +13,10 @@ int execute(char* arglist[], int, int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
+void execute_pipe(char *arglist[], char *pipe_args[]);
+int background_process(char *arglist[]);
 int redirect_output(char* arglist[], char** output_file);
+int internal_commands(char *arglist[]);
 int main(){
    int pipe;
    int block;
@@ -23,6 +26,7 @@ int main(){
    char *input_file;
    char *cmdline;
    char** arglist;
+   char** pipe_args;
    char cwd[1024];
    char str[80];
    signal(SIGINT, SIG_DFL);
@@ -32,6 +36,8 @@ int main(){
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
+       if(internal_commands(arglist))
+         continue;
     block = (background_process(arglist) == 0);
     input = redirect_input(arglist, &input_file);
     switch(input){
@@ -65,7 +71,42 @@ int main(){
    printf("\n");
    return 0;
 }
-int background_process(char **arglist){
+int internal_commands(char *arglist[]){
+  int total_commands = 5;
+  int i;
+  int switch_args = 0;
+  char* commands[total_commands];
+  commands[0] = "cd";
+  commands[1] = "exit";
+  commands[2] = "jobs";
+  commands[3] = "kill";
+  commands[4] = "help";
+  for(i=0; i<total_commands; i++){
+    if(strcmp(arglist[0], commands[i]) == 0){
+     switch_args = i+1;
+     break;
+    }
+  }
+  switch(switch_args){
+  case 1:
+    chdir(arglist[1]);
+    return 1;
+  case 2:
+    exit(0);
+  case 5:
+    openHelp();
+    return 1;
+  default:
+    break:
+  }
+  return 0;
+}
+void execute_pipe(char *arglist[], char *pipe_args[]){
+  int fd[2];
+  pid_t p1, p2;
+  
+}
+int background_process(char *arglist[]){
    int i;
    for(i=0; arglist[i] != NULL; i++){
       if(arglist[i-1][0] == '&'){
