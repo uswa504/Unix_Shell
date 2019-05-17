@@ -9,8 +9,7 @@
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
-int execute(char* arglist[], int, int, char*, int, char*);
-int background_process(char *arglist[]);
+int execute(char* arglist[], int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
@@ -18,7 +17,6 @@ int redirect_output(char* arglist[], char** output_file);
 int main(){
    int input;
    int output;
-   int block;
    char *output_file;
    char *input_file;
    char *cmdline;
@@ -32,7 +30,6 @@ int main(){
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
-    block = background_process(arglist);
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -55,7 +52,7 @@ int main(){
      case 1:
        printf("Redirecting to %s\n", output_file);
     }
-    execute(arglist, block, input, input_file, output, output_file);//  need to free arglist
+    execute(arglist, input, input_file, output, output_file);//  need to free arglist
          for(int j=0; j < MAXARGS+1; j++)
 	         free(arglist[j]);
          free(arglist);
@@ -113,15 +110,15 @@ int redirect_output(char* arglist[], char** output_file ){
   }
   return 0;
 }
-int execute(char* arglist[], int block, int input, char* input_file,int output,  char* output_file){
+int execute(char* arglist[], int input, char* input_file,int output,  char* output_file){
    int status;
    int result;
    int cpid = fork();
-      if(cpid == -1){
+      switch(cpid){
+      case -1:
          perror("fork failed");
 	 exit(1);
-      }
-      if(cpid == 0){
+      case 0:
 	      if(input){
 		freopen(input_file, "r", stdin);
 	      }
@@ -131,20 +128,18 @@ int execute(char* arglist[], int block, int input, char* input_file,int output, 
               execvp(arglist[0], arglist);
  	      perror("Command not found...");
 	      exit(1);
-      }
-      if(block){
+      default:
 	 waitpid(cpid, &status, 0);
          return 0;
        }
 }
-char** tokenize(char* cmdline){
-//allocate memory
+char** tokenize(char* cmdline){ //allocate memory
    char** arglist = (char**)malloc(sizeof(char*)* (MAXARGS+1));
    for(int j=0; j < MAXARGS+1; j++){
 	   arglist[j] = (char*)malloc(sizeof(char)* ARGLEN);
       bzero(arglist[j],ARGLEN);
     }
-   if(cmdline[0] == '\0')//if user has entered nothing and pressed enter key
+   if(cmdline[0] == '\0') //if user has entered nothing and pressed enter key
       return NULL;
    int argnum = 0; //slots used
    char*cp = cmdline; // pos in string
