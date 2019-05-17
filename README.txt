@@ -6,3 +6,5 @@ Tried to implement process backgrounding functionality by writing background_pro
 removed some errors but it's still not working. Now i am trying pipe functionality and some internal commands
 Implemented internal commands of exit and cd by writing a internal_commands function
 where i implemented these commands using their system calls of exit() and chdir().
+Implemented help command
+
