@@ -10,4 +10,5 @@ Implemented help command
 Tried to implement pipe handling but there are some errors i'm trying to
 figure out.
 Removed some errors ad now going to write pipe handling function
-
+chnaged the check_pipe function completely. NOW using strsep to seperate the
+arguments.
