@@ -15,7 +15,7 @@ char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
 void execute_pipe(char* arglist[], char* piped_args);
 int background_process(char *arglist[]);
-int check_pipe(char *arglist[], char** piped_args);
+int check_pipe(char *cmdline, char** piped_args);
 int redirect_output(char* arglist[], char** output_file);
 int internal_commands(char *arglist[]);
 int main(){
@@ -114,6 +114,7 @@ int internal_commands(char *arglist[]){
 void execute_pipe(char *arglist[], char *piped_args){
   int fd[2];
   pid_t p1, p2;
+  if
 }
 int background_process(char *arglist[]){
    int i;
@@ -127,23 +128,16 @@ int background_process(char *arglist[]){
    }
    return 0;
 }
-int check_pipe(char *arglist[], char** piped_args){
-   int i;
-   int j;
-   for(i=0; arglist[i]!=NULL; i++){
-     if(arglist[i][0] == '|'){
-      free(arglist[i]);
-      if(arglist[i+1] != NULL){
-  	*piped_args = arglist[i+1];
-      }
-      else return -1;
-      for(j=i; arglist[j-1] != NULL; j++){
-       	arglist[j] = arglist[j+2];
-      }
-      return 1;
-   }
+int check_pipe(char *cmdline, char** piped_args){
+  int i;
+  for(i=0; i<2; i++){
+   piped_args[i] = strsep(&cmdline, "|");
+   if(piped_args[i] == NULL)
+     break;
   }
-  return 0;
+  if(piped_args[1] == NULL) //no pipe found
+     return 0;
+  else return 1;
 }
 int redirect_input(char* arglist[], char** input_file ){
    int i;
