@@ -15,6 +15,7 @@ char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
 void execute_pipe(char *arglist[], char *pipe_args[]);
 int background_process(char *arglist[]);
+int check_pipe(char *arglist[], char** piped_args); 
 int redirect_output(char* arglist[], char** output_file);
 int internal_commands(char *arglist[]);
 int main(){
@@ -22,6 +23,7 @@ int main(){
    int block;
    int input;
    int output;
+   char *piped_args;
    char *output_file;
    char *input_file;
    char *cmdline;
@@ -120,6 +122,24 @@ int background_process(char *arglist[]){
       else return 0;
    }
    return 0;
+}
+int check_pipe(char *arglist[], char** piped_args){
+   int i;
+   int j;
+   for(i=0; arglist[i]!=NULL; i++){
+     if(arglist[i][0] == '|'){
+      free(arglist[i]);
+      if(arglist[i+1] != NULL){
+  	*piped_args = arglist[i+1];
+      }
+      else return -1;
+      for(j=i; arglist[j-1] != NULL; j++){
+       	arglist[j] = arglist[j+2];
+      }
+      return 1;
+   }
+  }
+  return 0;
 }
 int redirect_input(char* arglist[], char** input_file ){
    int i;
