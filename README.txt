@@ -7,4 +7,5 @@ removed some errors but it's still not working. Now i am trying pipe functionali
 Implemented internal commands of exit and cd by writing a internal_commands function
 where i implemented these commands using their system calls of exit() and chdir().
 Implemented help command
-
+Tried to implement pipe handling but there are some errors i'm trying to
+figure out.
