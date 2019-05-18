@@ -13,9 +13,9 @@ int execute(char* arglist[], int, int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
-void execute_pipe(char *arglist[], char *pipe_args[]);
+void execute_pipe(char *arglist[], char **piped_args);
 int background_process(char *arglist[]);
-int check_pipe(char *arglist[], char** piped_args); 
+int check_pipe(char *arglist[], char** piped_args);
 int redirect_output(char* arglist[], char** output_file);
 int internal_commands(char *arglist[]);
 int main(){
@@ -28,7 +28,6 @@ int main(){
    char *input_file;
    char *cmdline;
    char** arglist;
-   char** pipe_args;
    char cwd[1024];
    char str[80];
    signal(SIGINT, SIG_DFL);
@@ -41,6 +40,11 @@ int main(){
        if(internal_commands(arglist))
          continue;
     //block = background_process(arglist);
+    pipe = check_pipe(arglist, &piped_args);
+    if(pipe == 1){
+       execute_pipe(arglist, piped_args);
+       exit(0);
+    }
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -106,10 +110,9 @@ int internal_commands(char *arglist[]){
   }
   return 0;
 }
-void execute_pipe(char *arglist[], char *pipe_args[]){
+void execute_pipe(char *arglist[], char *piped_args[]){
   int fd[2];
   pid_t p1, p2;
-  
 }
 int background_process(char *arglist[]){
    int i;
