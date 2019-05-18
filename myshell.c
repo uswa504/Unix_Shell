@@ -130,7 +130,7 @@ void execute_pipe(char *arglist[], char **piped_args){
    }
   }
   else{
-   p2 = fork():
+   p2 = fork();
    if(p2 < 0){
      printf("Can't fork\n");
      exit(0);
