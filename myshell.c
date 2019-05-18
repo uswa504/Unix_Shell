@@ -113,6 +113,42 @@ int internal_commands(char *arglist[]){
 void execute_pipe(char *arglist[], char **piped_args){
   int fd[2];
   pid_t p1, p2;
+  if(pipe(fd) < 0){
+   printf("Pipes can't be initiated\n");
+   return;
+  }
+  p1 = fork();
+  if(p1 < 0){
+   printf("Can't fork\n");
+  }
+  if(p1 == 0){
+   close(fd[0]);
+   dup2(fd[1], STDOUT_FILENO);
+   close(fd[1]);
+   if(execvp(arglist[0], arglist) < 0){
+     printf("cant exec\n");
+   }
+  }
+  else{
+   p2 = fork():
+   if(p2 < 0){
+     printf("Can't fork\n");
+     exit(0);
+   }
+   if(p2 == 0){
+    close(fd[1]);
+    dup2(fd[0], STDIN_FILENO);
+    close(fd[0]);
+    if(execvp(piped_args[0], piped_args) < 0){
+      printf("cant exec\n");
+      exit(0);
+    }
+   }
+   else{
+    wait(NULL);
+    wait(NULL);
+   }
+  }
 }
 int background_process(char *arglist[]){
    int i;
