@@ -13,7 +13,7 @@ int execute(char* arglist[], int, int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
 int redirect_input(char* arglist[], char** input_file);
-void execute_pipe(char* arglist[], char* piped_args);
+void execute_pipe(char* arglist[], char** piped_args);
 int background_process(char *arglist[]);
 int check_pipe(char *cmdline, char** piped_args);
 int redirect_output(char* arglist[], char** output_file);
@@ -23,7 +23,7 @@ int main(){
    int block;
    int input;
    int output;
-   char *piped_args;
+   char **piped_args;
    char *output_file;
    char *input_file;
    char *cmdline;
@@ -36,16 +36,15 @@ int main(){
    strcat(str, cwd);
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
+      pipes = check_pipe(cmdline, piped_args);
+      if(pipes == 1){
+       execute_pipe(arglist, piped_args);
+       exit(0);
+      }
       if((arglist = tokenize(cmdline)) != NULL){
        if(internal_commands(arglist))
          continue;
     //block = background_process(arglist);
-    pipes = check_pipe(arglist, &piped_args);
-    //printf(pipe);
-    if(pipes == 1){
-       execute_pipe(arglist, piped_args);
-       exit(0);
-    }
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -111,10 +110,9 @@ int internal_commands(char *arglist[]){
   }
   return 0;
 }
-void execute_pipe(char *arglist[], char *piped_args){
+void execute_pipe(char *arglist[], char **piped_args){
   int fd[2];
   pid_t p1, p2;
-  if
 }
 int background_process(char *arglist[]){
    int i;
