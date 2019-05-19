@@ -12,3 +12,5 @@ figure out.
 Removed some errors ad now going to write pipe handling function
 chnaged the check_pipe function completely. NOW using strsep to seperate the
 arguments.
+Whenever i try to store the success scenerio of check_pipe function, there comes
+segmentation fault. 
