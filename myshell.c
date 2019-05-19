@@ -36,12 +36,14 @@ int main(){
    strcat(str, cwd);
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
-      pipes = check_pipe(cmdline, piped_args);
-      if(pipes == 1){
-       execute_pipe(arglist, piped_args);
-       exit(0);
-      }
+      //check_pipe(cmdline, piped_args);
+      //execute_pipe(arglist, piped_args);
+      //exit(0);
       if((arglist = tokenize(cmdline)) != NULL){
+       if(check_pipe(cmdline, piped_args)){
+         execute_pipe(arglist, piped_args);
+         exit(0);
+       }
        if(internal_commands(arglist))
          continue;
     //block = background_process(arglist);
@@ -126,7 +128,7 @@ void execute_pipe(char *arglist[], char **piped_args){
    dup2(fd[1], STDOUT_FILENO);
    close(fd[1]);
    if(execvp(arglist[0], arglist) < 0){
-     printf("cant exec\n");
+     printf("cant exec 1\n");
    }
   }
   else{
@@ -140,7 +142,7 @@ void execute_pipe(char *arglist[], char **piped_args){
     dup2(fd[0], STDIN_FILENO);
     close(fd[0]);
     if(execvp(piped_args[0], piped_args) < 0){
-      printf("cant exec\n");
+      printf("cant exec 2\n");
       exit(0);
     }
    }
@@ -169,8 +171,9 @@ int check_pipe(char *cmdline, char** piped_args){
    if(piped_args[i] == NULL)
      break;
   }
-  if(piped_args[1] == NULL) //no pipe found
+  if(piped_args[1] == NULL){ //no pipe found
      return 0;
+  }
   else return 1;
 }
 int redirect_input(char* arglist[], char** input_file ){
