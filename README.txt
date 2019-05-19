@@ -22,3 +22,6 @@ Whenever i try to store the success scenerio of check_pipe function, there comes
 segmentation fault. 
 I have tried to resolve this, it is resolved to some extent but it occurs 
 wheneve we call pipe execution function.
+I have wrote the function of history but there are still variable type issues,
+Segmentation fault is being occured everytime i call functions of
+backgrounding and pipe handling.
