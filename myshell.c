@@ -6,12 +6,14 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+#define HISTORY_COUNT 10
 #define MAX_LEN 512
 #define MAXARGS 10
 #define ARGLEN 30
 int execute(char* arglist[], int, int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
+int history(char*, int);
 int redirect_input(char* arglist[], char** input_file);
 void execute_pipe(char* arglist[], char** piped_args);
 int background_process(char *arglist[]);
@@ -24,9 +26,11 @@ int main(){
    int block;
    int input;
    int output;
+   int number;
    char **multiple_args;
    char **piped_args;
    char *output_file;
+   char *hist;
    char *input_file;
    char *cmdline;
    char** arglist;
@@ -77,6 +81,18 @@ int main(){
    }
    printf("\n");
    return 0;
+}
+int history(char *hist, int number){
+  int i = number;
+  int hist_num = 1;
+  do{
+    if(hist[i]){
+     printf("%s\n", hist[i]);
+     hist_num++;
+    }
+    i = (i+1)%HISTORY_COUNT;
+  }while(i != number);
+  return 0;
 }
 int internal_commands(char *arglist[]){
   int total_commands = 5;
