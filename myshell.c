@@ -26,16 +26,19 @@ int main(){
    int block;
    int input;
    int output;
+   int var;
    int number;
    char **multiple_args;
    char **piped_args;
    char *output_file;
-   char *hist;
+   char *hist[HISTORY_COUNT];
    char *input_file;
    char *cmdline;
    char** arglist;
    char cwd[1024];
    char str[80];
+   for(var = 0; var < HISTORY_COUNT; var++)
+     hist[var] = NULL;
    signal(SIGINT, SIG_DFL);
    getcwd(cwd, sizeof(cwd));
    strcpy(str,"cs321shell@");
@@ -43,6 +46,10 @@ int main(){
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
+       if(arglist[0]){
+        printf(arglist[0]);
+        exit(0);
+       }
        if(check_pipe(arglist, piped_args)){
          execute_pipe(arglist, piped_args);
          //exit(0);
