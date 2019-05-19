@@ -27,7 +27,7 @@ int main(){
    int input;
    int output;
    int var;
-   int number;
+   int number = 0;
    char **multiple_args;
    char **piped_args;
    char *output_file;
@@ -46,10 +46,10 @@ int main(){
    strcat(str, ":>");
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
-       if(arglist[0]){
-        printf(arglist[0]);
-        exit(0);
-       }
+       free(hist[number]);
+       hist[number]= strdup(cmdline);
+       printf(hist[number]);
+       number = (number + 1) % HISTORY_COUNT;
        if(check_pipe(arglist, piped_args)){
          execute_pipe(arglist, piped_args);
          //exit(0);
