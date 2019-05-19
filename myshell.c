@@ -48,8 +48,13 @@ int main(){
       if((arglist = tokenize(cmdline)) != NULL){
        free(hist[number]);
        hist[number]= strdup(cmdline);
-       printf(hist[number]);
        number = (number + 1) % HISTORY_COUNT;
+       if(arglist[0][0] == '!'){
+         int opt = atoi(arglist[0][1]);
+         printf(opt);
+         history(hist, opt);
+         continue;
+       }
        if(check_pipe(arglist, piped_args)){
          execute_pipe(arglist, piped_args);
          //exit(0);
