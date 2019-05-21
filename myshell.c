@@ -13,7 +13,7 @@
 int execute(char* arglist[], int, int, char*, int, char*);
 char** tokenize(char* cmdline);
 char* read_cmd(char*, FILE*);
-int history(char*, int);
+int history(char* hist[], int);
 int redirect_input(char* arglist[], char** input_file);
 void execute_pipe(char* arglist[], char** piped_args);
 int background_process(char *arglist[]);
@@ -21,7 +21,11 @@ int check_pipe(char* arglist[], char** piped_args);
 int check_semicolons(char* arglist[], char** multiple_args);
 int redirect_output(char* arglist[], char** output_file);
 int internal_commands(char *arglist[]);
+void signal_handler(int signo){
+  printf("Signal Caught");
+}
 int main(){
+   signal(SIGINT, signal_handler);
    int pipes;
    int block;
    int input;
@@ -50,8 +54,7 @@ int main(){
        hist[number]= strdup(cmdline);
        number = (number + 1) % HISTORY_COUNT;
        if(arglist[0][0] == '!'){
-         int opt = atoi(arglist[0][1]);
-         printf(opt);
+         int opt = arglist[0][1] - '0';
          history(hist, opt);
          continue;
        }
@@ -94,7 +97,7 @@ int main(){
    printf("\n");
    return 0;
 }
-int history(char *hist, int number){
+int history(char *hist[], int number){
   int i = number;
   int hist_num = 1;
   do{
