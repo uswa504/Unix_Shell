@@ -30,7 +30,7 @@ int main(){
    int input;
    int output;
    int var;
-   int number = 0;
+   int number = 1;
    char **multiple_args;
    char **piped_args;
    char *output_file;
@@ -93,20 +93,17 @@ int main(){
          free(arglist);
          free(cmdline);
       }
+      getcwd(cwd, sizeof(cwd));
+      strcpy(str,"cs321shell@");
+      strcat(str, cwd);
+      strcat(str, ":>");
    }
    printf("\n");
    return 0;
 }
 int history(char *hist[], int number){
   int i = number;
-  int hist_num = 1;
-  do{
-    if(hist[i]){
-     printf("%s\n", hist[i]);
-     hist_num++;
-    }
-    i = (i+1)%HISTORY_COUNT;
-  }while(i != number);
+  printf("%s\n", hist[i]);
   return 0;
 }
 int internal_commands(char *arglist[]){
@@ -298,8 +295,8 @@ char** tokenize(char* cmdline){ //allocate memory
    arglist[argnum] = NULL;
    return arglist;
 }
-char* read_cmd(char* prompt, FILE* fp){
-  printf("%s", prompt);
+char* read_cmd(char* str, FILE* fp){
+  printf("%s", str);
   int c; //input character
   int pos = 0; //position of character in cmdline
   char* cmdline = (char*) malloc(sizeof(char)*MAX_LEN);
