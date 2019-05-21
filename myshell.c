@@ -25,7 +25,6 @@ void signal_handler(int signo){
   printf("Signal Caught");
 }
 int main(){
-   signal(SIGINT, signal_handler);
    int pipes;
    int block;
    int input;
@@ -48,6 +47,7 @@ int main(){
    strcpy(str,"cs321shell@");
    strcat(str, cwd);
    strcat(str, ":>");
+   signal(SIGINT, signal_handler);
    while((cmdline = read_cmd(str,stdin)) != NULL){
       if((arglist = tokenize(cmdline)) != NULL){
        free(hist[number]);
