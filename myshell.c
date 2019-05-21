@@ -60,7 +60,7 @@ int main(){
        }
        if(check_pipe(arglist, piped_args)){
          execute_pipe(arglist, piped_args);
-         //exit(0);
+         exit(0);
        }
        if(internal_commands(arglist))
          continue;
