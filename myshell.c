@@ -22,7 +22,7 @@ int check_semicolons(char* arglist[], char** multiple_args);
 int redirect_output(char* arglist[], char** output_file);
 int internal_commands(char *arglist[]);
 void signal_handler(int signo){
-  printf("Signal Caught");
+  printf("Signal Caught!! \n");
 }
 int main(){
    int pipes;
