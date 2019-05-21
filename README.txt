@@ -25,3 +25,4 @@ wheneve we call pipe execution function.
 I have wrote the function of history but there are still variable type issues,
 Segmentation fault is being occured everytime i call functions of
 backgrounding and pipe handling.
+Wrote a signal handler to handle SIGINT.
