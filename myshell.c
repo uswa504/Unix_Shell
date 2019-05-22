@@ -64,7 +64,8 @@ int main(){
        }
        if(internal_commands(arglist))
          continue;
-    //block = background_process(arglist);
+     //if(background_process(arglist))
+        //continue;
     input = redirect_input(arglist, &input_file);
     switch(input){
      case -1:
@@ -160,7 +161,7 @@ void execute_pipe(char *arglist[], char **piped_args){
   }
   else{
    p2 = fork();
-   if(p2 < 0){
+   if(p2  <0){
      printf("Can't fork\n");
      exit(0);
    }
